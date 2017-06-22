@@ -1,0 +1,63 @@
+﻿<Window x:Class="FileOperatorDotNet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileOperatorDotNet"
+        mc:Ignorable="d"
+        Title="File Operator" Height="500" Width="525">
+    <Window.Resources>
+        <Style x:Key="gridMargin" TargetType="Control">
+            <Setter Property="Margin" Value="1"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <TabControl>
+            <TabItem Header="Read">
+                <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                    <local:GridWithMargins IsSharedSizeScope="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Label Content="File Name" Grid.Column="0" Grid.Row="0" />
+                        <TextBox Name="textBox_FileName" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" GotFocus="textBox_FileName_GotFocus">test.txt</TextBox>
+                        <Button Name="button_Open_Read" Grid.Row="1" Grid.Column="0" Click="button_Open_Read_Click">Open For Read</Button>
+                        <Button Grid.Row="1" Grid.Column="1" >Get Size</Button>
+                        <Label Content="&#009;: Bytes" Grid.Row="1" Grid.Column="2" />
+                        <Button Grid.Row="1" Grid.Column="3" >Close</Button>
+                        <Button Grid.Row="2" Grid.Column="0" >FSeek</Button>
+                        <ComboBox Grid.Row="2" Grid.Column="1" >
+                            <ComboBoxItem>begin pos</ComboBoxItem>
+                            <ComboBoxItem>current pos</ComboBoxItem>
+                            <ComboBoxItem>end pos</ComboBoxItem>
+                        </ComboBox>
+                        <TextBox Name="textBox_EditOffset" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"></TextBox>
+                        <Label Content="Length:" Grid.Row="3" Grid.Column="0"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" />
+                        <Button Grid.Row="3" Grid.Column="2">Read</Button>
+                        <Label Content="&#8595;" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" />
+                        <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="4" Grid.ColumnSpan="4">
+                                <TextBlock Grid.Row="4" ></TextBlock>
+                        </Border>
+                    </local:GridWithMargins>
+                </Border>
+            </TabItem>
+            <TabItem Header="Write">
+
+            </TabItem>
+            <TabItem Header="Map &amp; Query">
+
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
