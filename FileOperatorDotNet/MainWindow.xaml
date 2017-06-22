@@ -32,10 +32,10 @@
                         <Label Content="File Name" Grid.Column="0" Grid.Row="0" />
                         <TextBox Name="textBox_FileName" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" GotFocus="textBox_FileName_GotFocus">test.txt</TextBox>
                         <Button Name="button_Open_Read" Grid.Row="1" Grid.Column="0" Click="button_Open_Read_Click">Open For Read</Button>
-                        <Button Grid.Row="1" Grid.Column="1" >Get Size</Button>
-                        <Label Content="&#009;: Bytes" Grid.Row="1" Grid.Column="2" />
-                        <Button Grid.Row="1" Grid.Column="3" >Close</Button>
-                        <Button Grid.Row="2" Grid.Column="0" >FSeek</Button>
+                        <Button Name="button_GetSize" Grid.Row="1" Grid.Column="1" Click="button_GetSize_Click">Get Size</Button>
+                        <Label Name="label_Size" Content="&#009;: Bytes" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Button Name="button_Close_Read" Grid.Row="1" Grid.Column="3" Click="button_Close_Read_Click">Close</Button>
+                        <Button Name="button_FSeek" Grid.Row="2" Grid.Column="0" Click="button_FSeek_Click">FSeek</Button>
                         <ComboBox Grid.Row="2" Grid.Column="1" >
                             <ComboBoxItem>begin pos</ComboBoxItem>
                             <ComboBoxItem>current pos</ComboBoxItem>
@@ -45,7 +45,7 @@
                         <Label Content="Length:" Grid.Row="3" Grid.Column="0"/>
                         <TextBox Grid.Row="3" Grid.Column="1" />
                         <Button Grid.Row="3" Grid.Column="2">Read</Button>
-                        <Label Content="&#8595;" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" />
+                        <CheckBox Name="Button_NoCached" Content="No cached" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="4" Grid.ColumnSpan="4">
                                 <TextBlock Grid.Row="4" ></TextBlock>
                         </Border>
