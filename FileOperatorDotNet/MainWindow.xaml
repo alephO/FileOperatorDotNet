@@ -10,6 +10,14 @@
         <Style x:Key="gridMargin" TargetType="Control">
             <Setter Property="Margin" Value="1"/>
         </Style>
+        <ControlTemplate x:Key="numberOnly">
+            <Grid>
+                <Label Foreground="Red" HorizontalAlignment="Right" VerticalAlignment="Center">Please insert a integer</Label>
+                <Border BorderThickness="1" BorderBrush="Red">
+                    <AdornedElementPlaceholder />
+                </Border>
+            </Grid>
+        </ControlTemplate>
     </Window.Resources>
     <Grid>
         <TabControl>
@@ -36,24 +44,63 @@
                         <Label Name="label_Size" Content="&#009;: Bytes" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         <Button Name="button_Close_Read" Grid.Row="1" Grid.Column="3" Click="button_Close_Read_Click">Close</Button>
                         <Button Name="button_FSeek" Grid.Row="2" Grid.Column="0" Click="button_FSeek_Click">FSeek</Button>
-                        <ComboBox Grid.Row="2" Grid.Column="1" >
-                            <ComboBoxItem>begin pos</ComboBoxItem>
+                        <ComboBox Grid.Row="2" Grid.Column="1" Name="combox_Seek_Read">
+                            <ComboBoxItem IsSelected="True">begin pos</ComboBoxItem>
                             <ComboBoxItem>current pos</ComboBoxItem>
                             <ComboBoxItem>end pos</ComboBoxItem>
                         </ComboBox>
-                        <TextBox Name="textBox_EditOffset" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"></TextBox>
+                        <TextBox Name="textBox_EditOffset" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" ></TextBox>
                         <Label Content="Length:" Grid.Row="3" Grid.Column="0"/>
-                        <TextBox Grid.Row="3" Grid.Column="1" />
-                        <Button Grid.Row="3" Grid.Column="2">Read</Button>
+                        <TextBox Name ="textBox_ReadLen" Grid.Row="3" Grid.Column="1" />
+                        <Button Name="Button_Read" Grid.Row="3" Grid.Column="2" Click="Button_Read_Click">Read</Button>
                         <CheckBox Name="Button_NoCached" Content="No cached" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="4" Grid.ColumnSpan="4">
-                                <TextBlock Grid.Row="4" ></TextBlock>
+                                <TextBox Name="TextBlock_ReadResult" Grid.Row="4" TextWrapping="Wrap"></TextBox>
                         </Border>
                     </local:GridWithMargins>
                 </Border>
             </TabItem>
             <TabItem Header="Write">
+                <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                    <local:GridWithMargins IsSharedSizeScope="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Label Content="File Name" Grid.Column="0" Grid.Row="0" />
+                        <TextBox Name="textBox_Write_FileName" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" GotFocus="textBox_FileName_GotFocus">test.txt</TextBox>
+                        <CheckBox Name="Button_WriteShortName" Content="Short Name" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <CheckBox Name="Button_WriteNoCached" Content="No cached" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <CheckBox Name="Button_Overwrite" Content="Overwrite" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <CheckBox Name="Button_ExtendName" Content="Extend Name" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Button Name="button_Open_Write" Grid.Row="2" Grid.Column="0" Click="button_Open_Write_Click">Open For Read</Button>
+                        <Button Name="button_Close_Write" Grid.Row="2" Grid.Column="3">Close</Button>
+                        <Button Name="button_FSeek_Write" Grid.Row="3" Grid.Column="0">FSeek</Button>
+                        <ComboBox Grid.Row="3" Grid.Column="1" Name="combox_Seek_Write">
+                            <ComboBoxItem IsSelected="True">begin pos</ComboBoxItem>
+                            <ComboBoxItem>current pos</ComboBoxItem>
+                            <ComboBoxItem>end pos</ComboBoxItem>
+                        </ComboBox>
+                        <TextBox Name="textBox_EditOffset_Write" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" ></TextBox>
+                        <Label Content="Length:" Grid.Row="4" Grid.Column="0"/>
+                        <TextBox Name ="textBox_WriteLen" Grid.Row="4" Grid.Column="1" />
+                        <Button Name="Button_Write" Grid.Row="4" Grid.Column="3">Write</Button>
 
+                        <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="5" Grid.ColumnSpan="4">
+                            <TextBox Name="TextBlock_WriteHex" Grid.Row="4" TextWrapping="Wrap"></TextBox>
+                        </Border>
+                    </local:GridWithMargins>
+                </Border>
             </TabItem>
             <TabItem Header="Map &amp; Query">
 

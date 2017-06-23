@@ -86,8 +86,22 @@ namespace FileOperatorDotNet
         [SuppressUnmanagedCodeSecurity]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool CloseHandle(IntPtr hObject);
-    }
 
+        [DllImport("kernel32.dll")]
+        internal static extern uint SetFilePointer(IntPtr hFile, int liDistanceToMove,
+            [In,Out]IntPtr lpDistanceToMoveHigh, uint dwMoveMethod);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool ReadFile(IntPtr hFile, [Out] byte[] lpBuffer,
+            uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, IntPtr lpOverlapped);
+
+        [DllImport("kernel32.dll")]
+        internal static extern uint GetCurrentDirectory(uint nBufferLength,
+            [Out] StringBuilder lpBuffer);
+
+        public const uint MAX_DEEP_PATH = 32767;
+    }
+    
     [Flags]
     enum EFileAccess : uint
     {
