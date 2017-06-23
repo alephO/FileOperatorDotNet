@@ -15,14 +15,14 @@ namespace FileOperatorDotNet
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern uint GetFileAttributes(string lpFileName);
 
-        // Frequently used constants (incomplete - see https://msdn.microsoft.com/en-us/library/windows/desktop/gg258117(v=vs.85).aspx for full list)
-        internal const uint FILE_ATTRIBUTE_ARCHIVE = 0x20;
-        internal const uint FILE_ATTRIBUTE_DIRECTORY = 0x10;
-        internal const uint FILE_ATTRIBUTE_HIDDEN = 0x2;
-        internal const uint FILE_ATTRIBUTE_NORMAL = 0x80;
-        internal const uint FILE_ATTRIBUTE_READONLY = 0x1;
-        internal const uint FILE_ATTRIBUTE_SYSTEM = 0x4;
-        internal const uint FILE_ATTRIBUTE_TEMPORARY = 0x100;
+        //// Frequently used constants (incomplete - see https://msdn.microsoft.com/en-us/library/windows/desktop/gg258117(v=vs.85).aspx for full list)
+        //internal const uint FILE_ATTRIBUTE_ARCHIVE = 0x20;
+        //internal const uint FILE_ATTRIBUTE_DIRECTORY = 0x10;
+        //internal const uint FILE_ATTRIBUTE_HIDDEN = 0x2;
+        //internal const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+        //internal const uint FILE_ATTRIBUTE_READONLY = 0x1;
+        //internal const uint FILE_ATTRIBUTE_SYSTEM = 0x4;
+        //internal const uint FILE_ATTRIBUTE_TEMPORARY = 0x100;
         internal const uint INVALID_FILE_ATTRIBUTES = 0xffffffff;
 
         [DllImport("kernel32.dll")]
@@ -100,6 +100,20 @@ namespace FileOperatorDotNet
             [Out] StringBuilder lpBuffer);
 
         public const uint MAX_DEEP_PATH = 32767;
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern uint GetShortPathName(
+           [MarshalAs(UnmanagedType.LPTStr)]string lpszLongPath,
+           [Out]StringBuilder lpszShortPath,
+           uint cchBuffer);
+
+        [DllImport("kernel32.dll")]
+        internal static extern bool WriteFile(
+            IntPtr hFile, 
+            byte[] lpBuffer,
+            uint nNumberOfBytesToWrite, 
+            out uint lpNumberOfBytesWritten,
+            IntPtr lpOverlapped);
     }
     
     [Flags]

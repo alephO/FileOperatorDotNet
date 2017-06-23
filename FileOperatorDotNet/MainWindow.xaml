@@ -80,21 +80,21 @@
                         <Label Content="File Name" Grid.Column="0" Grid.Row="0" />
                         <TextBox Name="textBox_Write_FileName" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" GotFocus="textBox_FileName_GotFocus">test.txt</TextBox>
                         <CheckBox Name="Button_WriteShortName" Content="Short Name" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <CheckBox Name="Button_WriteNoCached" Content="No cached" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <CheckBox Name="Button_Overwrite" Content="Overwrite" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <CheckBox Name="Button_WriteNoCached" Content="No cached" Grid.Row="1" Grid.Column="1" IsChecked="{Binding ElementName=Button_NoCached, Path=IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <CheckBox Name="Button_Overwrite" Content="Overwrite" Grid.Row="1" Grid.Column="2"  HorizontalAlignment="Center" VerticalAlignment="Center" />
                         <CheckBox Name="Button_ExtendName" Content="Extend Name" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <Button Name="button_Open_Write" Grid.Row="2" Grid.Column="0" Click="button_Open_Write_Click">Open For Read</Button>
-                        <Button Name="button_Close_Write" Grid.Row="2" Grid.Column="3">Close</Button>
-                        <Button Name="button_FSeek_Write" Grid.Row="3" Grid.Column="0">FSeek</Button>
+                        <Button Name="button_Open_Write" Grid.Row="2" Grid.Column="0" Click="button_Open_Write_Click">Open For Write</Button>
+                        <Button Name="button_Close_Write" Grid.Row="2" Grid.Column="3" Click="button_Close_Write_Click">Close</Button>
+                        <Button Name="button_FSeek_Write" Grid.Row="3" Grid.Column="0" Click="button_FSeek_Write_Click">FSeek</Button>
                         <ComboBox Grid.Row="3" Grid.Column="1" Name="combox_Seek_Write">
                             <ComboBoxItem IsSelected="True">begin pos</ComboBoxItem>
                             <ComboBoxItem>current pos</ComboBoxItem>
                             <ComboBoxItem>end pos</ComboBoxItem>
                         </ComboBox>
                         <TextBox Name="textBox_EditOffset_Write" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" ></TextBox>
-                        <Label Content="Length:" Grid.Row="4" Grid.Column="0"/>
+                        <Label Content="Repeat Times:" Grid.Row="4" Grid.Column="0"/>
                         <TextBox Name ="textBox_WriteLen" Grid.Row="4" Grid.Column="1" />
-                        <Button Name="Button_Write" Grid.Row="4" Grid.Column="3">Write</Button>
+                        <Button Name="Button_Write" Grid.Row="4" Grid.Column="3" Click="Button_Write_Click">Write</Button>
 
                         <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="5" Grid.ColumnSpan="4">
                             <TextBox Name="TextBlock_WriteHex" Grid.Row="4" TextWrapping="Wrap"></TextBox>
@@ -103,7 +103,34 @@
                 </Border>
             </TabItem>
             <TabItem Header="Map &amp; Query">
-
+                <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1">
+                    <local:GridWithMargins IsSharedSizeScope="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="auto" SharedSizeGroup="groupName"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button Name="button_Map" Grid.Row="0" Grid.Column="0" Click="button_Map_Click">Map</Button>
+                        <Label Content="" Visibility="Hidden" Grid.Row="0" Grid.Column="2"/>
+                        <TextBox Name="textBox_MapSize" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" GotFocus="textBox_FileName_GotFocus"></TextBox>
+                        <Button Name="button_UnMap" Grid.Row="0" Grid.Column="3">Unmap &amp; Close</Button>
+                        <Button Name="button_Flush" Grid.Row="1" Grid.Column="0">Flush</Button>
+                        <TextBox Name="textBox_FlushNum" Grid.Row="1" Grid.Column="1" />
+                        <Button Name="button_Query" Grid.Row="2" Grid.Column="0" Content="Query" />
+                        <TextBox Name="textBox_deviceLetter" Grid.Row="2" Grid.Column="1" />
+                        <Button Name="button_BatchTest" Grid.Row="4" Grid.Column="0">Batch Test</Button>
+                        
+                    </local:GridWithMargins>
+                </Border>
             </TabItem>
         </TabControl>
     </Grid>
