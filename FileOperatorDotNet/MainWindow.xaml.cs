@@ -2,7 +2,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -780,28 +779,28 @@ namespace FileOperatorDotNet
                 return;
             }
 
-            if (deviceLetter.Contains("\\\\") && deviceLetter.IndexOf(":") != 1)
+            if (deviceLetter.Contains("\\\\") && deviceLetter.IndexOf(":", StringComparison.Ordinal) != 1)
             {
                 MessageBox.Show("device letter must be in format of \"\\\\xxxx\", \"\\\\?\\xxxx\" or \"x:\" ");
                 return;
             }
 
-            if (deviceLetter.IndexOf(":") == 1)
+            if (deviceLetter.IndexOf(":", StringComparison.Ordinal) == 1)
             {
                 deviceLetter = deviceLetter.Substring(0,2);
             }
 
             if (!deviceLetter.Contains("\\\\"))
             {
-                int slashIndex = -1;
+                int slashIndex;
 
                 if (!deviceLetter.Contains("\\\\?\\"))
                 {
-                    slashIndex = deviceLetter.Substring(3).IndexOf("\\");
+                    slashIndex = deviceLetter.Substring(3).IndexOf("\\", StringComparison.Ordinal);
                 }
                 else
                 {
-                    slashIndex = deviceLetter.Substring(1).IndexOf("\\");
+                    slashIndex = deviceLetter.Substring(1).IndexOf("\\", StringComparison.Ordinal);
                 }
 
                 if (slashIndex > 0)
