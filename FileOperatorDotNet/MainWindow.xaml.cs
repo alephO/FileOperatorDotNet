@@ -23,8 +23,13 @@ namespace FileOperatorDotNet
     {
         internal IntPtr m_hFile = IntPtr.Zero;
         internal IntPtr m_hWriteFile = IntPtr.Zero;
+        internal IntPtr m_hFileMap = IntPtr.Zero;
+        internal IntPtr m_pStartAddress = IntPtr.Zero;
         internal int m_readposition = 0;
         internal int m_writeposition = 0;
+
+        int m_dAddressOffset = 0;
+        int m_szMemorySize = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -94,30 +99,30 @@ namespace FileOperatorDotNet
                 return;
             }
 
-            /*
+            
             m_dAddressOffset = 0;
             m_szMemorySize = 0;
-            if (m_pStartAddress)
+            if (m_pStartAddress != IntPtr.Zero)
             {
-                if (!UnmapViewOfFile(m_pStartAddress))
+                if (!WIN32API.UnmapViewOfFile(m_pStartAddress))
                 {
-                    ShowErrorMsgAndCode("unmap file failed ", Marshal.GetLastWin32Error());
+                    MessageBox.Show("unmap file failed " + Marshal.GetLastWin32Error());
                 }
                 else
                 {
                     m_pStartAddress = IntPtr.Zero;
                 }
 
-                if (m_hFileMap && !CloseHandle(m_hFileMap))
+                if (m_hFileMap!=IntPtr.Zero && !WIN32API.CloseHandle(m_hFileMap))
                 {
-                    ShowErrorMsgAndCode("unmap file failed ", Marshal.GetLastWin32Error());
+                    MessageBox.Show("unmap file failed " + Marshal.GetLastWin32Error());
                 }
                 else
                 {
                     m_hFileMap = IntPtr.Zero;
                 }
             }
-            */
+            
             bool ret = WIN32API.CloseHandle(m_hFile);
 
             if (ret) MessageBox.Show("Closed successfully!");
@@ -146,7 +151,7 @@ namespace FileOperatorDotNet
             //    else if (m_readfseektype_select == 2) type = file_end;
             //    else
             //    {
-            //        messagebox.show("type is not set properly. treat is as beging set to file_begin.");
+            //        MessageBox.Show("type is not set properly. treat is as beging set to file_begin.");
             //    }
             uint seektype = 0;
             switch (m_readfseektype_select)
@@ -163,37 +168,37 @@ namespace FileOperatorDotNet
                 MessageBox.Show("invalid input for the fseek");
                 return;
             }
-            //    if (m_pstartaddress)
-            if(false)
+            if (m_pStartAddress != IntPtr.Zero)
+            //if(false)
             {
-                //if (type == file_end)
-                //{
-                //    messagebox.show("mapped file does not support fseek from end!");
-                //}
-                //else if (type == file_current)
-                //{
-                //    if (m_daddressoffset + pos > m_szmemorysize || m_daddressoffset + pos < 0)
-                //    {
-                //        messagebox.show("fseek beyond memory space!");
-                //    }
-                //    else
-                //    {
-                //        m_daddressoffset += pos;
-                //        showerrormsgandcode("succeeded. ", m_daddressoffset);
-                //    }
-                //}
-                //else
-                //{
-                //    if (pos > m_szmemorysize || pos < 0)
-                //    {
-                //        messagebox.show("fseek beyond memory space!");
-                //    }
-                //    else
-                //    {
-                //        m_daddressoffset = pos;
-                //        showerrormsgandcode("succeeded. ", m_daddressoffset);
-                //    }
-                //}
+                if (seektype == 2)
+                {
+                    MessageBox.Show("mapped file does not support fseek from end!");
+                }
+                else if (seektype == 1)
+                {
+                    if (m_dAddressOffset + readpos > m_szMemorySize || m_dAddressOffset + readpos < 0)
+                    {
+                        MessageBox.Show("fseek beyond memory space!");
+                    }
+                    else
+                    {
+                        m_dAddressOffset += readpos;
+                        MessageBox.Show("succeeded. " + m_dAddressOffset);
+                    }
+                }
+                else
+                {
+                    if (readpos > m_szMemorySize || readpos < 0)
+                    {
+                        MessageBox.Show("fseek beyond memory space!");
+                    }
+                    else
+                    {
+                        m_dAddressOffset = readpos;
+                        MessageBox.Show("succeeded. " + m_dAddressOffset);
+                    }
+                }
             }
             else
             {
@@ -240,49 +245,51 @@ namespace FileOperatorDotNet
             uint dwBytesRead;
             byte[] retval = new byte[len];
 
-            //if (m_pStartAddress != IntPtr.Zero)
-            if(false)
+            if (m_pStartAddress != IntPtr.Zero)
+            //if(false)
             {
-                //if (m_dAddressOffset < 0)
-                //{
-                //    MessageBox.Show(" pos error. Reopen the file and try again.");
-                //}
-                //else if (m_dAddressOffset >= m_szMemorySize)
-                //{
-                //    MessageBox.Show(" reach the end of the memory space!");
-                //}
-                //else
-                //{
-                //    //uint errorCode;
-                //    //__try
-                //    dwBytesRead = len;
-                //    if (m_dAddressOffset + len > m_szMemorySize)
-                //    {
-                //        dwBytesRead = m_szMemorySize - m_dAddressOffset;
-                //    }
+                if (m_dAddressOffset < 0)
+                {
+                    MessageBox.Show(" pos error. Reopen the file and try again.");
+                }
+                else if (m_dAddressOffset >= m_szMemorySize)
+                {
+                    MessageBox.Show(" reach the end of the memory space!");
+                }
+                else
+                {
+                    //uint errorCode;
+                    //__try
+                    dwBytesRead = len;
+                    if (m_dAddressOffset + len > m_szMemorySize)
+                    {
+                        dwBytesRead = (uint)(m_szMemorySize - m_dAddressOffset);
+                    }
 
-                //    try
-                //    {
-                //        CopyMemory(retval, (PCH)m_pStartAddress + m_dAddressOffset, dwBytesRead);
-                //        m_dAddressOffset += dwBytesRead;
+                    //try\
+                    {
+                        GCHandle pinnedArray = GCHandle.Alloc(retval, GCHandleType.Pinned);
+                        IntPtr pointer = pinnedArray.AddrOfPinnedObject();
+                        WIN32API.CopyMemory(pointer, m_pStartAddress + m_dAddressOffset, dwBytesRead);
+                        m_dAddressOffset += (int)dwBytesRead;
 
-                //        CString hs = bytesToHex(retval, dwBytesRead);
+                        string hs = Utils.ByteArrayToString(retval);
 
-                //        m_Edit_ReadResult.SetWindowTextW(hs);
+                        TextBlock_ReadResult.Text = hs;
 
-                //        CString s;
-                //        s.Format("%d bytes required, %d bytes returned", len, dwBytesRead);
-                //        MessageBox.Show("Succeeded. " + s);
-                //    }
-                //    //__except (GetExceptionCode() == EXCEPTION_IN_PAGE_ERROR ? 
-                //    //EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH)
-                //    catch (int errorCode)
-                //    {
-                //        // Failed to write to the view.
-                //        //errorCode = GetExceptionCode();
-                //        ShowErrorMsgAndCode("an paging error happened when writing to mapped file!", errorCode);
-                //    }
-                //}
+                        String s = string.Format("%d bytes required, %d bytes returned", len, dwBytesRead);
+                        MessageBox.Show("Succeeded. " + s);
+                        pinnedArray.Free();
+                    }
+                    //__except (GetExceptionCode() == EXCEPTION_IN_PAGE_ERROR ? 
+                    //EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH)
+                    //catch (int errorCode)
+                    //{
+                    //    // Failed to write to the view.
+                    //    //errorCode = GetExceptionCode();
+                    //    MessageBox.Show("an paging error happened when writing to mapped file!", errorCode);
+                    //}
+                }
             }
             else
             {
@@ -418,26 +425,26 @@ namespace FileOperatorDotNet
 
             //m_dAddressOffset = 0;
             //m_szMemorySize = 0;
-            //if (m_pStartAddress)
-            if(false)
+            if (m_pStartAddress != IntPtr.Zero)
+            //if(false)
             {
-                //if (!UnmapViewOfFile(m_pStartAddress))
-                //{
-                //    ShowErrorMsgAndCode("unmap file failed ", GetLastError());
-                //}
-                //else
-                //{
-                //    m_pStartAddress = IntPtr.Zero;
-                //}
+                if (!WIN32API.UnmapViewOfFile(m_pStartAddress))
+                {
+                    MessageBox.Show("unmap file failed " + Marshal.GetLastWin32Error());
+                }
+                else
+                {
+                    m_pStartAddress = IntPtr.Zero;
+                }
 
-                //if (m_hFileMap && !CloseHandle(m_hFileMap))
-                //{
-                //    ShowErrorMsgAndCode("unmap file failed ", GetLastError());
-                //}
-                //else
-                //{
-                //    m_hFileMap = IntPtr.Zero;
-                //}
+                if (m_hFileMap != IntPtr.Zero && !WIN32API.CloseHandle(m_hFileMap))
+                {
+                    MessageBox.Show("unmap file failed " + Marshal.GetLastWin32Error());
+                }
+                else
+                {
+                    m_hFileMap = IntPtr.Zero;
+                }
             }
 
             bool ret = WIN32API.CloseHandle(m_hWriteFile);
@@ -496,45 +503,47 @@ namespace FileOperatorDotNet
             uint dwb;
 
             // write to mapped buffer
-            //if (m_pStartAddress != IntPtr.Zero)
-            if(false)
+            if (m_pStartAddress != IntPtr.Zero)
+            //if(false)
             {
-                //if (m_dAddressOffset < 0)
-                //{
-                //    MessageBox.Show(" pos error. Reopen the file and try again.");
-                //}
-                //else if (m_dAddressOffset >= m_szMemorySize)
-                //{
-                //    MessageBox.Show(" reach the end of memory space! ");
-                //}
-                //else
-                //{
-                //    //DWORD errorCode;
-                //    //__try
-                //    dwb = len;
-                //    if (m_dAddressOffset + len > m_szMemorySize)
-                //    {
-                //        dwb = m_szMemorySize - m_dAddressOffset;
-                //    }
+                if (m_dAddressOffset < 0)
+                {
+                    MessageBox.Show(" pos error. Reopen the file and try again.");
+                }
+                else if (m_dAddressOffset >= m_szMemorySize)
+                {
+                    MessageBox.Show(" reach the end of memory space! ");
+                }
+                else
+                {
+                    //DWORD errorCode;
+                    //__try
+                    dwb = (uint)buf.Length;
+                    if (m_dAddressOffset + buf.Length > m_szMemorySize)
+                    {
+                        dwb = (uint)(m_szMemorySize - m_dAddressOffset);
+                    }
 
-                //    try
-                //    {
-                //        CopyMemory((PCH)m_pStartAddress + m_dAddressOffset, buf, dwb);
-                //        m_dAddressOffset += dwb;
+                    //try
+                    {
+                        GCHandle pinnedArray = GCHandle.Alloc(buf, GCHandleType.Pinned);
+                        IntPtr pointer = pinnedArray.AddrOfPinnedObject();
+                        WIN32API.CopyMemory(m_pStartAddress + m_dAddressOffset, pointer, dwb);
+                        m_dAddressOffset += (int)dwb;
 
-                //        CString s;
-                //        s.Format("%d bytes sent, %d bytes written", len, dwb);
-                //        MessageBox.Show("Writing succeeded. " + s);
-                //    }
-                //    //__except (GetExceptionCode() == EXCEPTION_IN_PAGE_ERROR ? 
-                //    //EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH)
-                //    catch (int errorCode)
-                //    {
-                //        // Failed to write to the view.
-                //        //errorCode = GetExceptionCode();
-                //        ShowErrorMsgAndCode("an paging error happened when writing to mapped file!", errorCode);
-                //    }
-                //}
+                        string s = string.Format("%d bytes sent, %d bytes written", buf.Length, dwb);
+                        MessageBox.Show("Writing succeeded. " + s);
+                        pinnedArray.Free();
+                    }
+                    //__except (GetExceptionCode() == EXCEPTION_IN_PAGE_ERROR ? 
+                    //EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH)
+                    //catch (int errorCode)
+                    //{
+                    //    // Failed to write to the view.
+                    //    //errorCode = GetExceptionCode();
+                    //    MessageBox.Show("an paging error happened when writing to mapped file!", errorCode);
+                    //}
+                }
             }
             else
             {
@@ -587,7 +596,7 @@ namespace FileOperatorDotNet
             //    else if (m_readfseektype_select == 2) type = file_end;
             //    else
             //    {
-            //        messagebox.show("type is not set properly. treat is as beging set to file_begin.");
+            //        MessageBox.Show("type is not set properly. treat is as beging set to file_begin.");
             //    }
             uint seektype = 0;
             switch (m_writefseektype_select)
@@ -605,37 +614,37 @@ namespace FileOperatorDotNet
                 return;
             }
 
-            //if (m_pStartAddress)
-            if(false)
+            if (m_pStartAddress != IntPtr.Zero)
+            //if(false)
             {
-                //if (type == FILE_END)
-                //{
-                //    MessageBox.Show("mapped file does not support fseek from end!");
-                //}
-                //else if (type == FILE_CURRENT)
-                //{
-                //    if (m_dAddressOffset + pos > m_szMemorySize || m_dAddressOffset + pos < 0)
-                //    {
-                //        MessageBox.Show("fseek beyond memory space!");
-                //    }
-                //    else
-                //    {
-                //        m_dAddressOffset += pos;
-                //        ShowErrorMsgAndCode("Succeeded. ", m_dAddressOffset);
-                //    }
-                //}
-                //else
-                //{
-                //    if (pos > m_szMemorySize || pos < 0)
-                //    {
-                //        MessageBox.Show("fseek beyond memory space!");
-                //    }
-                //    else
-                //    {
-                //        m_dAddressOffset = pos;
-                //        ShowErrorMsgAndCode("Succeeded. ", m_dAddressOffset);
-                //    }
-                //}
+                if (seektype == 2)
+                {
+                    MessageBox.Show("mapped file does not support fseek from end!");
+                }
+                else if (seektype == 1)
+                {
+                    if (m_dAddressOffset + pos > m_szMemorySize || m_dAddressOffset + pos < 0)
+                    {
+                        MessageBox.Show("fseek beyond memory space!");
+                    }
+                    else
+                    {
+                        m_dAddressOffset += pos;
+                        MessageBox.Show("Succeeded. " + m_dAddressOffset);
+                    }
+                }
+                else
+                {
+                    if (pos > m_szMemorySize || pos < 0)
+                    {
+                        MessageBox.Show("fseek beyond memory space!");
+                    }
+                    else
+                    {
+                        m_dAddressOffset = pos;
+                        MessageBox.Show("Succeeded. " + m_dAddressOffset);
+                    }
+                }
             }
             else
             {
@@ -663,55 +672,54 @@ namespace FileOperatorDotNet
 
         private void button_Map_Click(object sender, RoutedEventArgs e)
         {
-            if (m_hWriteFile == NULL && m_hFile == NULL)
+            if (m_hWriteFile == IntPtr.Zero && m_hFile == IntPtr.Zero)
             {
                 MessageBox.Show("no valid file handle has been opened!");
             }
             else
             {
-                if (!UInt32.TryParse())
+                uint dSize = 0;
+                if (!UInt32.TryParse(textBox_MapSize.Text, out dSize))
                 {
-
+                    MessageBox.Show("Invalid size");
+                    return;
                 }
-                if (dSize < 0) MessageBox.Show("size must be non-negative");
 
-                HANDLE handle = (m_hWriteFile == NULL) ? m_hFile : m_hWriteFile;
-                DWORD options = (m_hWriteFile == handle) ? PAGE_READWRITE : PAGE_READONLY;
-                m_hFileMap = CreateFileMapping(handle, NULL, options, (dSize >> 32) & 0xFFFF, dSize & 0xFFFF, "test");
+                IntPtr handle = (m_hWriteFile == IntPtr.Zero) ? m_hFile : m_hWriteFile;
+                FileMapProtection options = (m_hWriteFile == handle) ? FileMapProtection.PageReadWrite : FileMapProtection.PageReadonly;
+                m_hFileMap = WIN32API.CreateFileMapping(handle, IntPtr.Zero, options, (dSize >> 32) & 0xFFFF, dSize & 0xFFFF, "test");
 
-                if (m_hFileMap == NULL)
+                if (m_hFileMap == IntPtr.Zero)
                 {
-                    ShowErrorMsgAndCode("error happened when creating file map ", GetLastError());
+                    MessageBox.Show("error happened when creating file map "+ Marshal.GetLastWin32Error());
                 }
                 else
                 {
-                    m_pStartAddress = MapViewOfFile(
+                    m_pStartAddress = WIN32API.MapViewOfFile(
                         m_hFileMap,
-                        options == PAGE_READWRITE ? FILE_MAP_WRITE : FILE_MAP_READ,
+                        options == FileMapProtection.PageReadWrite? FileMapAccess.FileMapWrite: FileMapAccess.FileMapRead,
                         0,
                         0,
                         dSize);
-                    if (m_pStartAddress == NULL)
+                    if (m_pStartAddress == IntPtr.Zero)
                     {
-                        ShowErrorMsgAndCode("error happened when mapping this file ", GetLastError());
+                        MessageBox.Show("error happened when mapping this file " + Marshal.GetLastWin32Error());
                     }
                     else
                     {
                         m_dAddressOffset = 0;
                         m_szMemorySize = 0;
 
-                        MEMORY_BASIC_INFORMATION memBasicInfo;
+                        var memBasicInfo = new MEMORY_BASIC_INFORMATION();
 
-                        if (VirtualQuery(m_pStartAddress, &memBasicInfo, sizeof(MEMORY_BASIC_INFORMATION)) <= 0)
+                        if (WIN32API.VirtualQuery(m_pStartAddress, out memBasicInfo, (uint)Marshal.SizeOf(memBasicInfo)) <= 0)
                         {
-                            ShowErrorMsgAndCode("error happened when querying mem info ", GetLastError());
+                            MessageBox.Show("error happened when querying mem info " + Marshal.GetLastWin32Error());
                         }
                         else
                         {
-                            m_szMemorySize = memBasicInfo.RegionSize;
-
-                            CString msg;
-                            msg.Format("succeed mapping this file 0x%lx", (ULONG_PTR)m_pStartAddress);
+                            m_szMemorySize = memBasicInfo.RegionSize.ToInt32();
+                            string msg = string.Format("succeed mapping this file {0}", m_pStartAddress);
                             MessageBox.Show(msg);
                         }
 
@@ -719,6 +727,100 @@ namespace FileOperatorDotNet
 
                 }
             }
+        }
+
+        private void button_UnMap_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Add your control notification handler code here
+            if (m_pStartAddress == IntPtr.Zero)
+            {
+                MessageBox.Show("this file has not been mapped!");
+            }
+            else
+            {
+                if (!WIN32API.UnmapViewOfFile(m_pStartAddress))
+                {
+                    MessageBox.Show("error happened when unmapping this file " + Marshal.GetLastWin32Error());
+                }
+                else
+                {
+                    m_pStartAddress = IntPtr.Zero;
+                    m_dAddressOffset = 0;
+                    m_szMemorySize = 0;
+                    if (m_hFileMap != IntPtr.Zero)
+                    {
+                        if (!WIN32API.CloseHandle(m_hFileMap))
+                        {
+                            MessageBox.Show("error happened when closing file mapping handle "+ Marshal.GetLastWin32Error());
+                        }
+                        else
+                        {
+                            m_hFileMap = IntPtr.Zero;
+                            MessageBox.Show("succeed unmapping file and closing handle!");
+                        }
+                    }
+                }
+            }
+        }
+
+        private void button_Flush_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: Add your control notification handler code here
+            if (m_pStartAddress == IntPtr.Zero)
+            {
+                MessageBox.Show("map address for writting is not valid!");
+            }
+            else
+            {
+                uint flushNum;
+
+                if (!UInt32.TryParse(textBox_FlushNum.Text, out flushNum))
+                {
+                    MessageBox.Show("flush num must be a non-negative integer!");
+                }
+                else
+                {
+                    //DWORD errorCode;
+                    //__try 
+                    //try
+                    //{
+                        if (!WIN32API.FlushViewOfFile(m_pStartAddress, flushNum))
+                        {
+                            MessageBox.Show(" failed to flush view " + Marshal.GetLastWin32Error());
+                        }
+                        else
+                        {
+                            if (m_hWriteFile != IntPtr.Zero)
+                            {
+                                if (!WIN32API.FlushFileBuffers(m_hWriteFile))
+                                {
+                                    MessageBox.Show(" failed to flush file " + Marshal.GetLastWin32Error());
+                                }
+                                else
+                                {
+                                    MessageBox.Show("succeed flushing view and file! " + flushNum);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("succeed flushing view only! "+  flushNum);
+                            }
+                        }
+                    //}
+                    //__except(EXCEPTION_EXECUTE_HANDLER) 
+                    //catch (int errorCode)
+                    //{
+                    //    //errorCode = GetExceptionCode();
+                    //    MessageBox.Show("paging error " + errorCode);
+                    //}
+                }
+
+            }
+        }
+
+        private void button_BatchTest_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Unimplemented");
         }
     }
 }

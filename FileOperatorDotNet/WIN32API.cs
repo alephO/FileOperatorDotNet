@@ -78,7 +78,7 @@ namespace FileOperatorDotNet
              [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition,
              [MarshalAs(UnmanagedType.U4)] FileAttributes flagsAndAttributes,
              IntPtr templateFile);
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool GetFileSizeEx(IntPtr hFile, out long lpFileSize);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -87,7 +87,7 @@ namespace FileOperatorDotNet
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool CloseHandle(IntPtr hObject);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern uint SetFilePointer(IntPtr hFile, int liDistanceToMove,
             [In,Out]IntPtr lpDistanceToMoveHigh, uint dwMoveMethod);
 
@@ -95,7 +95,7 @@ namespace FileOperatorDotNet
         internal static extern bool ReadFile(IntPtr hFile, [Out] byte[] lpBuffer,
             uint nNumberOfBytesToRead, out uint lpNumberOfBytesRead, IntPtr lpOverlapped);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern uint GetCurrentDirectory(uint nBufferLength,
             [Out] StringBuilder lpBuffer);
 
@@ -107,15 +107,48 @@ namespace FileOperatorDotNet
            [Out]StringBuilder lpszShortPath,
            uint cchBuffer);
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern bool WriteFile(
             IntPtr hFile, 
             byte[] lpBuffer,
             uint nNumberOfBytesToWrite, 
             out uint lpNumberOfBytesWritten,
             IntPtr lpOverlapped);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr CreateFileMapping(
+            IntPtr hFile,
+            IntPtr lpFileMappingAttributes,
+            FileMapProtection flProtect,
+            uint dwMaximumSizeHigh,
+            uint dwMaximumSizeLow,
+            [MarshalAs(UnmanagedType.LPStr)] string lpName);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern IntPtr MapViewOfFile(
+            IntPtr hFileMappingObject,
+            FileMapAccess dwDesiredAccess,
+            UInt32 dwFileOffsetHigh,
+            UInt32 dwFileOffsetLow,
+            UInt32 dwNumberOfBytesToMap);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern int VirtualQuery(IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, uint dwLength);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool FlushViewOfFile(IntPtr lpBaseAddress,
+            uint dwNumberOfBytesToFlush);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool FlushFileBuffers(IntPtr hFile);
+
+        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
+        public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
     }
-    
+
     [Flags]
     enum EFileAccess : uint
     {
@@ -274,5 +307,41 @@ namespace FileOperatorDotNet
         OpenReparsePoint = 0x00200000,
         OpenNoRecall = 0x00100000,
         FirstPipeInstance = 0x00080000
+    }
+
+    [Flags]
+    enum FileMapProtection : uint
+    {
+        PageReadonly = 0x02,
+        PageReadWrite = 0x04,
+        PageWriteCopy = 0x08,
+        PageExecuteRead = 0x20,
+        PageExecuteReadWrite = 0x40,
+        SectionCommit = 0x8000000,
+        SectionImage = 0x1000000,
+        SectionNoCache = 0x10000000,
+        SectionReserve = 0x4000000,
+    }
+
+    [Flags]
+    public enum FileMapAccess : uint
+    {
+        FileMapCopy = 0x0001,
+        FileMapWrite = 0x0002,
+        FileMapRead = 0x0004,
+        FileMapAllAccess = 0x001f,
+        FileMapExecute = 0x0020,
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MEMORY_BASIC_INFORMATION
+    {
+        public IntPtr BaseAddress;
+        public IntPtr AllocationBase;
+        public uint AllocationProtect;
+        public IntPtr RegionSize;
+        public uint State;
+        public uint Protect;
+        public uint Type;
     }
 }

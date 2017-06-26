@@ -122,12 +122,12 @@
                         <Button Name="button_Map" Grid.Row="0" Grid.Column="0" Click="button_Map_Click">Map</Button>
                         <Label Content="" Visibility="Hidden" Grid.Row="0" Grid.Column="2"/>
                         <TextBox Name="textBox_MapSize" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" GotFocus="textBox_FileName_GotFocus"></TextBox>
-                        <Button Name="button_UnMap" Grid.Row="0" Grid.Column="3">Unmap &amp; Close</Button>
-                        <Button Name="button_Flush" Grid.Row="1" Grid.Column="0">Flush</Button>
+                        <Button Name="button_UnMap" Grid.Row="0" Grid.Column="3" Click="button_UnMap_Click">Unmap &amp; Close</Button>
+                        <Button Name="button_Flush" Grid.Row="1" Grid.Column="0" Click="button_Flush_Click">Flush</Button>
                         <TextBox Name="textBox_FlushNum" Grid.Row="1" Grid.Column="1" />
                         <Button Name="button_Query" Grid.Row="2" Grid.Column="0" Content="Query" />
                         <TextBox Name="textBox_deviceLetter" Grid.Row="2" Grid.Column="1" />
-                        <Button Name="button_BatchTest" Grid.Row="4" Grid.Column="0">Batch Test</Button>
+                        <Button Name="button_BatchTest" Grid.Row="4" Grid.Column="0" Click="button_BatchTest_Click">Batch Test</Button>
                         
                     </local:GridWithMargins>
                 </Border>
