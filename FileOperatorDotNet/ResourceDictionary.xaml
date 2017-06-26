@@ -15,7 +15,7 @@
                         </Grid.RowDefinitions>
                         <Border Padding="0">
                             <DockPanel>
-                                <TabPanel IsItemsHost="True" Height="55"/>
+                                <TabPanel IsItemsHost="True" Height="50"/>
                                 <Image Source="{StaticResource bicdroid-logo}" Height="35" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
                             </DockPanel>
                         </Border>
@@ -37,8 +37,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ImageTabItem}">
                     <Grid>
-                        <!-- 主Border -->
-                        <Border Background="{TemplateBinding Background}" Padding="15 10 15 10" VerticalAlignment="Center">
+                        <Border x:Name="tagBorder" Background="{TemplateBinding Background}" Padding="15 10 15 10" VerticalAlignment="Center">
                             <!--<ContentPresenter ContentSource="Header"
                                   VerticalAlignment="Center"
                                   Margin="20,10"/>-->
@@ -56,6 +55,7 @@
                             <Setter TargetName="Nor" Property="Opacity" Value="0" />
                             <Setter TargetName="Hor" Property="Opacity" Value="0" />
                             <Setter TargetName="Down" Property="Opacity" Value="100" />
+                            <Setter TargetName="tagBorder" Property="Padding" Value="15 9 15 9" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Nor" Property="Opacity" Value="0" />
@@ -69,4 +69,59 @@
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontSize" Value="18"/>
     </Style>
+
+
+    <Style x:Key="ImageButtonStyle" TargetType="{x:Type local:ImageButton}">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type local:ImageButton}">
+            <Grid>
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="CommonStates">
+                  <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="0:0:0.2"/>
+                  </VisualStateGroup.Transitions>
+                  <VisualState x:Name="Normal">
+                    <Storyboard>
+                      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Hor">
+                        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                      </DoubleAnimationUsingKeyFrames>
+                      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Down">
+                        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                      </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualState>
+                  <VisualState x:Name="MouseOver">
+                    <Storyboard>
+                      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Nor">
+                        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                      </DoubleAnimationUsingKeyFrames>
+                      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Down">
+                        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                      </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualState>
+                  <VisualState x:Name="Pressed">
+                    <Storyboard>
+                      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Nor">
+                        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                      </DoubleAnimationUsingKeyFrames>
+                      <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Hor">
+                        <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                      </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualState>
+                  <VisualState x:Name="Disabled"/>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+              <Image x:Name="Nor" Source="{TemplateBinding BNorImage}" />
+              <Image x:Name="Hor" Source="{TemplateBinding BHorImage}" />
+              <Image x:Name="Down" Source="{TemplateBinding BDownImage}" />
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+
 </ResourceDictionary>

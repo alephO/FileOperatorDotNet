@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ImageButton.cs" />
     <Compile Include="ImageTabItem.cs" />
     <Compile Include="Ultils.cs" />
     <Compile Include="WIN32API.cs" />
@@ -123,6 +124,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\write_h.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\close_ck.png" />
+    <Resource Include="img\close_h.png" />
+    <Resource Include="img\down_n.png" />
+    <Resource Include="img\min_ck.png" />
+    <Resource Include="img\min_h.png" />
+    <Resource Include="img\min_n.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
