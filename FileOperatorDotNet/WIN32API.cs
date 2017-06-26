@@ -147,6 +147,9 @@ namespace FileOperatorDotNet
 
         [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
         public static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern uint QueryDosDevice(string lpDeviceName, StringBuilder lpTargetPath, uint ucchMax);
     }
 
     [Flags]

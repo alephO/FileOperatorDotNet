@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -767,6 +768,60 @@ namespace FileOperatorDotNet
         private void button_BatchTest_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Unimplemented");
+        }
+
+        private void button_Query_Click(object sender, RoutedEventArgs e)
+        {
+            string deviceLetter = textBox_deviceLetter.Text;
+
+            if (deviceLetter== string.Empty)
+            {
+                MessageBox.Show("No device letter specified");
+                return;
+            }
+
+            if (deviceLetter.Contains("\\\\") && deviceLetter.IndexOf(":") != 1)
+            {
+                MessageBox.Show("device letter must be in format of \"\\\\xxxx\", \"\\\\?\\xxxx\" or \"x:\" ");
+                return;
+            }
+
+            if (deviceLetter.IndexOf(":") == 1)
+            {
+                deviceLetter = deviceLetter.Substring(0,2);
+            }
+
+            if (!deviceLetter.Contains("\\\\"))
+            {
+                int slashIndex = -1;
+
+                if (!deviceLetter.Contains("\\\\?\\"))
+                {
+                    slashIndex = deviceLetter.Substring(3).IndexOf("\\");
+                }
+                else
+                {
+                    slashIndex = deviceLetter.Substring(1).IndexOf("\\");
+                }
+
+                if (slashIndex > 0)
+                {
+                    deviceLetter = deviceLetter.Substring(0,slashIndex);
+                }
+            }
+
+            StringBuilder deviceName = new StringBuilder(256);
+            uint nLetter = WIN32API.QueryDosDevice(deviceLetter, deviceName, 256);
+
+            if (nLetter > 0)
+            {
+                string csDeviceName = string.Format("{0}", deviceName);
+                MessageBox.Show("device name is " + csDeviceName);
+            }
+            else
+            {
+                MessageBox.Show("get device name failed");
+            }
         }
     }
 }
