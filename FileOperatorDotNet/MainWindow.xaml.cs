@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace FileOperatorDotNet
 {
@@ -814,13 +815,25 @@ namespace FileOperatorDotNet
 
             if (nLetter > 0)
             {
-                string csDeviceName = string.Format("{0}", deviceName);
-                MessageBox.Show("device name is " + csDeviceName);
+                MessageBox.Show("device name is " + deviceName);
             }
             else
             {
                 MessageBox.Show("get device name failed");
             }
+        }
+
+        private void OnDrag(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

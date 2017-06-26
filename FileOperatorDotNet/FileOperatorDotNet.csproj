@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ImageTabItem.cs" />
     <Compile Include="Ultils.cs" />
     <Compile Include="WIN32API.cs" />
     <Page Include="MainWindow.xaml">
@@ -69,6 +70,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -95,6 +100,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\bicdroid-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\read_h.png" />
+    <Resource Include="img\read_n.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\read_ck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\map_ck.png" />
+    <Resource Include="img\map_h.png" />
+    <Resource Include="img\map_n.png" />
+    <Resource Include="img\Write_ck.png" />
+    <Resource Include="img\write_n.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\write_h.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
