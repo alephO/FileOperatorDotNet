@@ -18,7 +18,7 @@ namespace FileOperatorDotNet
         }
 
         public static readonly DependencyProperty BNorImageProperty =
-            DependencyProperty.Register("BNorImage", typeof(ImageSource), typeof(ImageTabItem));
+            DependencyProperty.Register("BNorImage", typeof(ImageSource), typeof(ImageButton));
 
         public ImageSource BHorImage
         {
@@ -27,7 +27,7 @@ namespace FileOperatorDotNet
         }
 
         public static readonly DependencyProperty BHorImageProperty =
-            DependencyProperty.Register("BHorImage", typeof(ImageSource), typeof(ImageTabItem));
+            DependencyProperty.Register("BHorImage", typeof(ImageSource), typeof(ImageButton));
 
 
         public ImageSource BDownImage
@@ -37,7 +37,7 @@ namespace FileOperatorDotNet
         }
 
         public static readonly DependencyProperty BDownImageProperty =
-            DependencyProperty.Register("BDownImage", typeof(ImageSource), typeof(ImageTabItem));
+            DependencyProperty.Register("BDownImage", typeof(ImageSource), typeof(ImageButton));
 
     }
 }

@@ -16,7 +16,7 @@
                         <Border Padding="0">
                             <DockPanel>
                                 <TabPanel IsItemsHost="True" Height="50"/>
-                                <Image Source="{StaticResource bicdroid-logo}" Height="35" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                                <Image Source="{StaticResource bicdroid-logo}" Height="45" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
                             </DockPanel>
                         </Border>
                         <Border Grid.Row="1"
@@ -74,7 +74,7 @@
     <Style x:Key="ImageButtonStyle" TargetType="{x:Type local:ImageButton}">
       <Setter Property="Template">
         <Setter.Value>
-          <ControlTemplate TargetType="{x:Type local:ImageButton}">
+         <ControlTemplate TargetType="{x:Type local:ImageButton}">
             <Grid>
               <VisualStateManager.VisualStateGroups>
                 <VisualStateGroup x:Name="CommonStates">
@@ -117,6 +117,7 @@
               <Image x:Name="Nor" Source="{TemplateBinding BNorImage}" />
               <Image x:Name="Hor" Source="{TemplateBinding BHorImage}" />
               <Image x:Name="Down" Source="{TemplateBinding BDownImage}" />
+            
             </Grid>
           </ControlTemplate>
         </Setter.Value>

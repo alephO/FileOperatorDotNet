@@ -35,8 +35,10 @@
         <DockPanel>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="WhiteSmoke">File Operator</Label>
 
-            <local:ImageButton  BNorImage="img\down_n.png" BHorImage="img\close_h.png" BDownImage="img\close_ck.png" Style="{DynamicResource ImageButtonStyle}" DockPanel.Dock="Right" Margin="5 0 5 0"/>
+            <local:ImageButton  BNorImage="img\down_n.png" BHorImage="img\close_h.png" BDownImage="img\close_ck.png" Style="{DynamicResource ImageButtonStyle}" DockPanel.Dock="Right" Margin="5 0 5 0" Click="Close_Click"/>
+        
             <local:ImageButton  BNorImage="img\min_n.png" BHorImage="img\min_h.png" BDownImage="img\min_ck.png" Style="{DynamicResource ImageButtonStyle}" DockPanel.Dock="Right" HorizontalAlignment="Right" Margin="5 0 5 0"/>
+        
         </DockPanel>
         <TabControl Style="{StaticResource TabCTR1}" Margin="0 0 0 0" Grid.Row="1"> 
             <local:ImageTabItem  Header="Read" NorImage="img\read_n.png" HorImage="img\read_h.png" DownImage="img\read_ck.png" Style="{DynamicResource ImageTabItemStyle}" >
