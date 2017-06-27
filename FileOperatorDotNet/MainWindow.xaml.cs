@@ -835,5 +835,10 @@ namespace FileOperatorDotNet
         {
             Close();
         }
+
+        private void MinBtn_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
     }
 }
